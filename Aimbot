@@ -54,7 +54,7 @@ function GetNearestPlayerToMouse()
     end
 
     local L_DISTANCE = math.floor(math.min(unpack(DISTANCES)))
-    if L_DISTANCE > 3.5 then
+    if L_DISTANCE > 4 then
         return false
     end
 
