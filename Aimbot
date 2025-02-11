@@ -12,10 +12,11 @@ local PRIORITY_DISTANCE = 10 -- Максимальное расстояние д
 
 wait(1)
 
--- Функция для проверки количества команд в игре
-local function getTeamCount()
-    local teams = game:GetService("Teams"):GetTeams()
-    return #teams
+-- Функция для проверки, является ли игра Free For All
+local function isFreeForAll()
+    local playerTeam = PLAYER:GetAttribute("Team")
+    -- Если значение Team не T и не CT, то это Free For All
+    return playerTeam ~= "T" and playerTeam ~= "CT"
 end
 
 -- Добавляем переменную для хранения текущей приоритетной цели
@@ -33,7 +34,12 @@ function GetNearestPlayerToMouse()
     end
 
     for _, v in pairs(PLAYERS) do
-        if getTeamCount() <= 1 or v.TeamColor ~= PLAYER.TeamColor then
+        local playerTeam = PLAYER:GetAttribute("Team")
+        local targetTeam = v:GetAttribute("Team")
+
+        -- Проверяем, является ли игра Free For All
+        if isFreeForAll() then
+            -- Если Free For All, то все игроки являются противниками
             if v and (v.Character ~= nil) then
                 local AIM = v.Character:FindFirstChild(_G.AIM_AT)
                 if AIM ~= nil then
@@ -44,6 +50,22 @@ function GetNearestPlayerToMouse()
                     
                     PLAYER_HOLD[v.Name] = {plr = v, dist = DISTANCE, diff = DIFF}
                     table.insert(DISTANCES, DIFF)
+                end
+            end
+        else
+            -- Если не Free For All, проверяем команды
+            if (playerTeam == "CT" and targetTeam == "T") or (playerTeam == "T" and targetTeam == "CT") then
+                if v and (v.Character ~= nil) then
+                    local AIM = v.Character:FindFirstChild(_G.AIM_AT)
+                    if AIM ~= nil then
+                        local DISTANCE = (AIM.Position - game.Workspace.CurrentCamera.CoordinateFrame.p).magnitude
+                        local RAY = Ray.new(game.Workspace.CurrentCamera.CoordinateFrame.p, (MOUSE.Hit.p - CC.CoordinateFrame.p).unit * DISTANCE)
+                        local HIT, POS = game.Workspace:FindPartOnRay(RAY, game.Workspace)
+                        local DIFF = math.floor((POS - AIM.Position).magnitude)
+                        
+                        PLAYER_HOLD[v.Name] = {plr = v, dist = DISTANCE, diff = DIFF}
+                        table.insert(DISTANCES, DIFF)
+                    end
                 end
             end
         end
