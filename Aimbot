@@ -6,7 +6,7 @@ ENABLED = false
 AIM_KEY = Enum.UserInputType.MouseButton2 -- Изначально прицеливание на правую кнопку мыши
 
 _G.FREE_FOR_ALL = true
-_G.CHANGE_AIM = 'q'
+_G.CHANGE_AIM = 'F15'
 _G.AIM_AT = 'Head'
 local PRIORITY_DISTANCE = 10 -- Максимальное расстояние для приоритетной цели
 
