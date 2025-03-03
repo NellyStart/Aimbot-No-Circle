@@ -145,12 +145,12 @@ GUI_TOGGLE_TEXT.Font = 'SourceSansBold'
 -- Функция для обработки нажатия клавиши L
 MOUSE.KeyDown:connect(function(KEY)
     if KEY == 'l' then
-        if AIM_KEY == Enum.UserInputType.MouseButton2 then
+        if AIM_KEY == Enum.UserInputType.MouseButton3 then
             AIM_KEY = Enum.KeyCode.F12 -- Меняем на F12
             GUI_STATUS.Text = 'Disable'
             GUI_STATUS.TextColor3 = Color3.new(1, 0, 0) -- Красный цвет для Disable
         else
-            AIM_KEY = Enum.UserInputType.MouseButton2 -- Возвращаем на правую кнопку мыши
+            AIM_KEY = Enum.UserInputType.MouseButton3 -- Возвращаем на правую кнопку мыши
             GUI_STATUS.Text = 'Enable'
             GUI_STATUS.TextColor3 = Color3.new(0, 1, 0) -- Зеленый цвет для Enable
         end
@@ -158,13 +158,13 @@ MOUSE.KeyDown:connect(function(KEY)
 end)
 
 -- Обработка нажатия клавиши для прицеливания
-MOUSE.Button2Down:connect(function()
+MOUSE.Button3Down:connect(function()
     if AIM_KEY == Enum.UserInputType.MouseButton2 then
         ENABLED = true
     end
 end)
 
-MOUSE.Button2Up:connect(function()
+MOUSE.Button3Up:connect(function()
     if AIM_KEY == Enum.UserInputType.MouseButton2 then
         ENABLED = false
         priorityTarget = nil -- Сбрасываем приоритетную цель, когда отключаем Aimbot
