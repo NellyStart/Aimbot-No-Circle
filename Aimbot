@@ -14,7 +14,7 @@ wait(1)
 
 -- Функция для проверки, является ли игра Free For All
 local function isFreeForAll()
-    local playerTeam = PLAYER.Team -- Используем свойство Team
+    local playerTeam = PLAYER:GetAttribute("Team")
     -- Если значение Team не T и не CT, то это Free For All
     return playerTeam ~= "T" and playerTeam ~= "CT"
 end
@@ -34,8 +34,8 @@ function GetNearestPlayerToMouse()
     end
 
     for _, v in pairs(PLAYERS) do
-        local playerTeam = PLAYER.Team
-        local targetTeam = v.Team
+        local playerTeam = PLAYER:GetAttribute("Team")
+        local targetTeam = v:GetAttribute("Team")
 
         -- Проверяем, является ли игра Free For All
         if isFreeForAll() then
@@ -88,7 +88,6 @@ function GetNearestPlayerToMouse()
     return false
 end
 
--- Создаем GUI
 local GUI_MAIN = Instance.new('ScreenGui', game.CoreGui)
 local GUI_TARGET = Instance.new('TextLabel', GUI_MAIN)
 local GUI_AIM_AT = Instance.new('TextLabel', GUI_MAIN)
@@ -158,11 +157,10 @@ MOUSE.KeyDown:connect(function(KEY)
     end
 end)
 
--- Обработка нажатия клавиши E
+-- Обработка нажатия клавиши E для прицеливания
 game:GetService('UserInputService').InputBegan:Connect(function(input, gameProcessed)
     if input.KeyCode == Enum.KeyCode.E and AIM_KEY == Enum.KeyCode.E then
         ENABLED = true
-        print("Клавиша E нажата: Aimbot активирован")
     end
 end)
 
@@ -170,7 +168,20 @@ game:GetService('UserInputService').InputEnded:Connect(function(input, gameProce
     if input.KeyCode == Enum.KeyCode.E and AIM_KEY == Enum.KeyCode.E then
         ENABLED = false
         priorityTarget = nil -- Сбрасываем приоритетную цель, когда отключаем Aimbot
-        print("Клавиша E отпущена: Aimbot деактивирован")
+    end
+end)
+
+-- Обработка нажатия клавиши F12 (если она активна)
+game:GetService('UserInputService').InputBegan:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.F12 and AIM_KEY == Enum.KeyCode.F12 then
+        ENABLED = true
+    end
+end)
+
+game:GetService('UserInputService').InputEnded:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.F12 and AIM_KEY == Enum.KeyCode.F12 then
+        ENABLED = false
+        priorityTarget = nil -- Сбрасываем приоритетную цель, когда отключаем Aimbot
     end
 end)
 
@@ -206,7 +217,7 @@ game:GetService('RunService').RenderStepped:connect(function()
             end
         end
         
-        -- Если приоритетная цель не установлена или вне радиуса, устанавливаем ближайшего игрока
+        -- Если приоритетная цель не установлена или вне радиуса, устанавливаем ближайшую игрока
         if nearestPlayer then
             priorityTarget = nearestPlayer
             local AIM = nearestPlayer.Character:FindFirstChild(_G.AIM_AT)
